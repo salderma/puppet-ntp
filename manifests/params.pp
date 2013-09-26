@@ -20,7 +20,7 @@ class ntp::params {
   $cron_command = 'ntpd -q'
 
   $keys_file = $::operatingsystem ? {
-    'Solaris'            => '/etc/inet/ntp.keys',
+    /(?i:Solaris)/       => '/etc/inet/ntp.keys',
     /(?i:SLES|OpenSuSE)/ => '/etc/ntp.keys',
     default              => '/etc/ntp/keys',
   }
@@ -29,17 +29,17 @@ class ntp::params {
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    'Solaris' => $::operatingsystemrelease ? {
-      '5.10'  => [ 'SUNWntpr' , 'SUNWntpu' ],
-      default => 'ntp',
+    /(?i:Solaris)/ => $::operatingsystemrelease ? {
+      '5.11'  => 'ntp',
+      default => '',
     },
-    default   => 'ntp',
+    default        => 'ntp',
   }
   $ntpdate_package = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'ntpdate',
-    'Solaris'                 => $::operatingsystemrelease ? {
-      '5.10'  => [ 'SUNWntpr' , 'SUNWntpu' ],
-      default => 'ntp',
+    /(?i:Solaris)/            => $::operatingsystemrelease ? {
+      '5.11'  => 'ntp',
+      default => '',
     },
     default                   => 'ntp',
   }
@@ -47,6 +47,7 @@ class ntp::params {
   $service = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint|Solaris)/ => 'ntp',
     /(?i:SLES|OpenSuSE)/              => 'ntp',
+    /(?i:Solaris)/                    => 'ntp',
     default                           => 'ntpd',
   }
 
@@ -55,6 +56,9 @@ class ntp::params {
   }
 
   $process = $::operatingsystem ? {
+    /(?i:Solaris)/ => $::operatingsystemrelease ? {
+      '5.11'  => 'ntpd',
+      default => 'xntpd',
     default => 'ntpd',
   }
 
@@ -92,17 +96,21 @@ class ntp::params {
 
   $config_file_init = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/ntp',
+    /(?i:Solaris)/            => '',
     default                   => '/etc/sysconfig/ntpd',
   }
 
   $pid_file = $::operatingsystem ? {
-    'Solaris' => '/var/run/ntp.pid',
+    /(?i:Solaris)/ => $operatingsystemrelease ? {
+      '5.11'  => '/var/run/ntp.pid',
+      default => '',
+    }
     default   => '/var/run/ntpd.pid',
   }
 
   $data_dir = $::operatingsystem ? {
-    'Solaris' => '/var/ntp',
-    default   => '/var/lib/ntp',
+    /(?i:Solaris)/ => '/var/ntp',
+    default        => '/var/lib/ntp',
   }
 
   $log_dir = $::operatingsystem ? {
@@ -114,8 +122,9 @@ class ntp::params {
   }
 
   $drift_file = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint|Solaris)/ => "$data_dir/ntp.drift",
-    default                           => "$data_dir/drift",
+    /(?i:Debian|Ubuntu|Mint)/ => "$data_dir/ntp.drift",
+    /(?i:Solaris)/            => "$data_dir/ntp.drift",
+    default                   => "$data_dir/drift",
   }
 
   $use_local_clock = $::virtual ? {
