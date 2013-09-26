@@ -356,7 +356,6 @@ class ntp (
 
   if $ntp::bool_absent == true
   or $ntp::bool_disable == true
-  or $ntp::bool_monitor == false
   or $ntp::bool_disableboot == true {
     $manage_monitor = false
   } else {
@@ -482,7 +481,7 @@ class ntp (
 
 
   ### Service monitoring, if enabled ( monitor => true )
-  if $ntp::monitor_tool and $ntp::runmode == 'service' {
+  if $ntp::bool_monitor == true and $ntp::runmode == 'service' {
 
     if $ntp::protocol == 'tcp' {
       monitor::port { "ntp_${ntp::protocol}_${ntp::port}":
@@ -505,7 +504,7 @@ class ntp (
   }
 
   # Time Monitoring
-  if $ntp::monitor_tool {
+  if $ntp::bool_monitor == true {
     monitor::plugin { "ntp_time":
       plugin    => 'check_ntp',
       arguments => "-H $ntp::first_server",
