@@ -59,7 +59,8 @@ class ntp::params {
     /(?i:Solaris)/ => $::operatingsystemrelease ? {
       '5.11'  => 'ntpd',
       default => 'xntpd',
-    default => 'ntpd',
+    },
+    default        => 'ntpd',
   }
 
   $process_args = $::operatingsystem ? {
@@ -104,8 +105,8 @@ class ntp::params {
     /(?i:Solaris)/ => $operatingsystemrelease ? {
       '5.11'  => '/var/run/ntp.pid',
       default => '',
-    }
-    default   => '/var/run/ntpd.pid',
+    },
+    default        => '/var/run/ntpd.pid',
   }
 
   $data_dir = $::operatingsystem ? {
