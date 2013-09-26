@@ -25,7 +25,7 @@ describe 'ntp' do
   end
 
   describe 'Test standard installation with monitoring and firewalling' do
-    let(:params) { {:monitor => true , :firewall => true, :port => '42', :protocol => 'tcp' } }
+    let(:params) { {:monitor => true , :monitor_tool => 'puppi' , :firewall => true, :port => '42', :protocol => 'tcp' } }
 
     it { should contain_package('ntp').with_ensure('present') }
     it { should contain_service('ntp').with_ensure('running') }
@@ -78,7 +78,7 @@ describe 'ntp' do
   end
 
   describe 'Test decommissioning - absent' do
-    let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
+    let(:params) { {:absent => true, :monitor => true , :monitor_tool => 'puppi' , :firewall => true, :port => '42', :protocol => 'tcp'} }
 
     it 'should remove Package[ntp]' do should contain_package('ntp').with_ensure('absent') end 
     it 'should not manage Service[ntp]' do should_not contain_service('ntp') end
@@ -94,7 +94,7 @@ describe 'ntp' do
   end
 
   describe 'Test decommissioning - disable' do
-    let(:params) { {:disable => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
+    let(:params) { {:disable => true, :monitor => true , :monitor_tool => 'puppi' , :firewall => true, :port => '42', :protocol => 'tcp'} }
 
     it { should contain_package('ntp').with_ensure('present') }
     it 'should stop Service[ntp]' do should contain_service('ntp').with_ensure('stopped') end
@@ -111,7 +111,7 @@ describe 'ntp' do
   end
 
   describe 'Test decommissioning - disableboot' do
-    let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
+    let(:params) { {:disableboot => true, :monitor => true , :monitor_tool => 'puppi' , :firewall => true, :port => '42', :protocol => 'tcp'} }
   
     it { should contain_package('ntp').with_ensure('present') }
     it { should_not contain_service('ntp').with_ensure('present') }
@@ -232,7 +232,7 @@ describe 'ntp' do
   end
 
   describe 'Test params lookup' do
-    let(:facts) { { :monitor => true , :ipaddress => '10.42.42.42' } }
+    let(:facts) { { :monitor => true , :monitor_tool => 'puppi' , :ipaddress => '10.42.42.42' } }
     let(:params) { { :port => '42' } }
 
     it 'should honour top scope global vars' do
@@ -242,7 +242,7 @@ describe 'ntp' do
   end
 
   describe 'Test params lookup' do
-    let(:facts) { { :ntp_monitor => true , :ipaddress => '10.42.42.42' } }
+    let(:facts) { { :ntp_monitor => true , :monitor_tool => 'puppi' , :ipaddress => '10.42.42.42' } }
     let(:params) { { :port => '42' } }
 
     it 'should honour module specific vars' do
