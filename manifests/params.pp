@@ -29,20 +29,25 @@ class ntp::params {
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    'Solaris' => '',
+    'Solaris' => $::operatingsystemrelease ? {
+      '5.10'  => [ 'SUNWntpr' , 'SUNWntpu' ],
+      default => 'ntp',
+    },
     default   => 'ntp',
   }
   $ntpdate_package = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'ntpdate',
-    'Solaris'                 => '',
+    'Solaris'                 => $::operatingsystemrelease ? {
+      '5.10'  => [ 'SUNWntpr' , 'SUNWntpu' ],
+      default => 'ntp',
+    },
     default                   => 'ntp',
   }
 
   $service = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => 'ntp',
-    /(?i:SLES|OpenSuSE)/      => 'ntp',
-    /(?i:Solaris)/            => 'ntp',
-    default                   => 'ntpd',
+    /(?i:Debian|Ubuntu|Mint|Solaris)/ => 'ntp',
+    /(?i:SLES|OpenSuSE)/              => 'ntp',
+    default                           => 'ntpd',
   }
 
   $service_status = $::operatingsystem ? {
@@ -50,8 +55,7 @@ class ntp::params {
   }
 
   $process = $::operatingsystem ? {
-    /(?i:Solaris)/ => 'xntpd',
-    default        => 'ntpd',
+    default => 'ntpd',
   }
 
   $process_args = $::operatingsystem ? {
@@ -59,8 +63,7 @@ class ntp::params {
   }
 
   $process_user = $::operatingsystem ? {
-    /(?i:Solaris)/ => 'root',
-    default        => 'ntp',
+    default => 'ntp',
   }
 
   $config_dir = $::operatingsystem ? {
@@ -89,12 +92,11 @@ class ntp::params {
 
   $config_file_init = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/ntp',
-    /(?i:Solaris)/            => '',
     default                   => '/etc/sysconfig/ntpd',
   }
 
   $pid_file = $::operatingsystem ? {
-    'Solaris' => '',
+    'Solaris' => '/var/run/ntp.pid',
     default   => '/var/run/ntpd.pid',
   }
 
@@ -112,9 +114,8 @@ class ntp::params {
   }
 
   $drift_file = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => "$data_dir/ntp.drift",
-    /(?i:Solaris)/            => "$data_dir/ntp.drift",
-    default                   => "$data_dir/drift",
+    /(?i:Debian|Ubuntu|Mint|Solaris)/ => "$data_dir/ntp.drift",
+    default                           => "$data_dir/drift",
   }
 
   $use_local_clock = $::virtual ? {
