@@ -56,6 +56,10 @@ driftfile <%= @drift_file %>
 # with symmetric key cryptography. 
 keys <%= @keys_file %>
 
+<% if @operatingsystem == 'SLES' %>
+trustedkey 1			# define trusted keys
+requestkey 1			# key (7) for accessing server variables
+<% else %>
 # Specify the key identifiers which are trusted.
 #trustedkey 4 8 42
 
@@ -64,4 +68,4 @@ keys <%= @keys_file %>
 
 # Specify the key identifier to use with the ntpq utility.
 #controlkey 8
-
+<% end %>
