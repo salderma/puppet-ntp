@@ -310,7 +310,7 @@ class ntp (
     service => $ntp::package,
     cron    => $ntp::ntpdate_package,
   }
-  $require_package => $ntp::package ? {
+  $require_package = $ntp::package ? {
     '' => undef,
     default => Package['ntp'],
   }
